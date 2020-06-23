@@ -10,7 +10,7 @@ public class PeopleTrack : People
 
     public People[] people;
     public float[] distance;
-
+    float timerHit;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -27,9 +27,12 @@ public class PeopleTrack : People
 
         for (int i = 0; i < people.Length; i++)
         {
+
             if (people[i] == null || people[i].name == "殭屍" || people[i].name == "警察") 
             {
-                distance[i] = 999;
+
+                if (people[i] == null) distance[i] = 1000;
+                else  distance[i] = 999;
                 continue; // 繼續 -  跳過並執行下一次迴圈 
             }
             distance[i] = Vector3.Distance(transform.position, people[i].transform.position);
@@ -44,7 +47,7 @@ public class PeopleTrack : People
 
         transform.LookAt(target);
 
-        if (agent.remainingDistance <= 1.2f && Time.timeSinceLevelLoad > 0.1f) HitPeople();
+        if (agent.remainingDistance <= 1.2f && Time.timeSinceLevelLoad > 0.1f && min != 999) HitPeople();
 
         print("最近的距離" + distance.Min());
 
@@ -52,8 +55,23 @@ public class PeopleTrack : People
 
     private void HitPeople()
     {
+        if (timerHit >= 1)
+        {
 
-        target.GetComponent<People>().Dead();
+
+            timerHit = 0;
+
+            agent.isStopped = true;
+            ani.SetTrigger("攻擊");
+            target.GetComponent<People>().Dead();
+        }
+        else
+        {
+            agent.isStopped = false;
+            timerHit += Time.deltaTime;
+
+        }
+
 
     }
 

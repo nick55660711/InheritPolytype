@@ -13,6 +13,7 @@ public class PeopleFarAttack : PeopleTrack
 
     protected override void Track()
     {
+        if (target == null) return;
         agent.SetDestination(target.position);
         if (agent.remainingDistance <= stop) Attack();
         transform.LookAt(target);
@@ -25,13 +26,13 @@ public class PeopleFarAttack : PeopleTrack
         if (timer >= cd)
         {
             timer = 0;
+            agent.isStopped = true;
             ani.SetTrigger("攻擊");
             GameObject temp = Instantiate(bullet, transform.position + transform.right * 0.5f + transform.forward * 0.5f + transform.up * 0.8f, transform.rotation);
             Rigidbody rig = temp.AddComponent<Rigidbody>();
             rig.AddForce(transform.forward * 500);
             Destroy(temp, 5f);
         }
-
     }
 
 
